@@ -44,7 +44,7 @@ First PVC and corresponding application pod writing to the PVC
 kubectl apply -f test-claim.yaml
 kubectl apply -f test-pod.yaml
 ```
-On the NFS server you should see:
+An NFS server's export directory you should see:
 ```
 [root@localhost nfs-root-dynamic]# ls /var/spool/nfs-root-dynamic/ -l
 drwxrwxrwx. 2 root root 37 Mar 25 13:08 default-test-claim-pvc-b2ce634a-5825-4397-b04e-828d2362b444
@@ -56,7 +56,7 @@ Second PVC and corresponding application pod writing to the PVC
 kubectl apply -f test-another-claim.yaml
 kubectl apply -f test-another-pod.yaml
 ```
-On the NFS server's exports directory:
+AN NFS server's exports directory:
 ```
 [root@localhost nfs-root-dynamic]# ls /var/spool/nfs-root-dynamic/ -l
 drwxrwxrwx. 2 root root 37 Mar 25 13:08 default-test-claim-pvc-b2ce634a-5825-4397-b04e-828d2362b444
@@ -79,7 +79,7 @@ kubectl patch storageclass managed-nfs-storage -p '{"metadata": {"annotations":{
 NAME                            PROVISIONER                      AGE
 managed-nfs-storage (default)   demo.local-nfs-provisioner/nfs   75m
 ```
-On the NFS server's exports directory:
+An NFS server's exports directory:
 ```
 [root@localhost nfs-root-dynamic]# ls /var/spool/nfs-root-dynamic/ -l
 drwxrwxrwx. 2 root root 37 Mar 25 13:08 default-test-claim-pvc-b2ce634a-5825-4397-b04e-828d2362b444
