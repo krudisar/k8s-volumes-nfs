@@ -1,12 +1,39 @@
 # k8s-volumes-nfs
 Kubernetes manifests for nfs-provisioning-client, related objects as well as sample deployment to test the scenario
 
+# Initial deployment
+
+Modify deployment.yml file to adjust nfs-client-provisioner configuration based on your NFS Server configuration ...
+```
+          env:
+            - name: PROVISIONER_NAME
+              value: demo.local-nfs-provisioner/nfs
+            - name: NFS_SERVER
+              value: 10.0.0.7
+            - name: NFS_PATH
+              value: /var/spool/nfs-root-dynamic/
+      volumes:
+        - name: nfs-client-root
+          nfs:
+            server: 10.0.0.7
+            path: /var/spool/nfs-root-dynamic/
+
+```
+
+... and then deploy the nfs-client-provisioner along with related objects: 
+
+```
+kubectl apply -f deployment.yaml
+kubectl apply -f rbac.yaml
+kubectl apply -f class.yaml
+
+```
 # Example #1
 
 First PVC and corresponding application pod writing to the PVC
 ```
-test-claim.yaml
-test-pod.yaml
+kubectl apply -f test-claim.yaml
+kubectl apply -f test-pod.yaml
 ```
 On the NFS server you should see:
 ```
@@ -17,8 +44,8 @@ drwxrwxrwx. 2 root root 37 Mar 25 13:08 default-test-claim-pvc-b2ce634a-5825-439
 
 Second PVC and corresponding application pod writing to the PVC
 ```
-test-another-claim.yaml
-test-another-pod.yaml
+kubectl apply -f test-another-claim.yaml
+kubectl apply -f test-another-pod.yaml
 ```
 On the NFS server's exports directory:
 ```
@@ -32,8 +59,8 @@ drwxrwxrwx. 2 root root 25 Mar 25 14:12 default-test-another-claim-pvc-bf1182b2-
 Third PVC created WITHOUT any StorageGroup defined and corresponding application pod writing to the PVC
 Mark an existing StorageClass as a default class. In this case the PVC is created using the default StorageClass.
 ```
-test-claim-no-sc-specified.yaml
-test-pod-using-default-sc.yaml
+kubectl apply -f test-claim-no-sc-specified.yaml
+kubectl apply -f test-pod-using-default-sc.yaml
 ```
 To mark any existing Kubernetes StorageClass as default, use:
 ```
