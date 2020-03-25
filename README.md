@@ -4,7 +4,17 @@ Kubernetes manifests for nfs-provisioning-client, related objects as well as sam
 # Initial deployment
 
 Modify deployment.yml file to adjust nfs-client-provisioner configuration based on your NFS Server configuration ...
+Sample NFS Server /etc/exports file content:
 ```
+[root@localhost nfs-root-dynamic]# cat /etc/exports
+# write settings for NFS exports
+/var/spool/nfs-root *(rw,no_root_squash)
+/var/spool/nfs-root-dynamic *(rw,sync,hard,intr,no_root_squash)
+```
+!!! (no special access rights defined - DO NOT USE THIS IN PRODUCTION) !!!
+
+```
+...
           env:
             - name: PROVISIONER_NAME
               value: demo.local-nfs-provisioner/nfs
@@ -17,7 +27,7 @@ Modify deployment.yml file to adjust nfs-client-provisioner configuration based 
           nfs:
             server: 10.0.0.7
             path: /var/spool/nfs-root-dynamic/
-
+...
 ```
 
 ... and then deploy the nfs-client-provisioner along with related objects: 
@@ -26,7 +36,6 @@ Modify deployment.yml file to adjust nfs-client-provisioner configuration based 
 kubectl apply -f deployment.yaml
 kubectl apply -f rbac.yaml
 kubectl apply -f class.yaml
-
 ```
 # Example #1
 
