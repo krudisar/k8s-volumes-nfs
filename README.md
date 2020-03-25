@@ -1,4 +1,4 @@
-# k8s-volumes-nfs
+# Dynamic provisioning of Kubernetes Volumes using NFS
 Kubernetes manifests for nfs-provisioning-client, related objects as well as sample deployment to test the scenario
 
 # Initial deployment
