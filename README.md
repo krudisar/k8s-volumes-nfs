@@ -1,6 +1,10 @@
 # Dynamic provisioning of Kubernetes Volumes using NFS
 Kubernetes manifests for nfs-provisioning-client, related objects as well as sample deployment to test the scenario
 
+Links: 
+- https://github.com/kubernetes-incubator/external-storage/tree/master/nfs-client
+- https://github.com/kubernetes-incubator/external-storage/tree/master/nfs
+
 # Initial deployment
 
 Modify deployment.yml file to adjust nfs-client-provisioner configuration based on your NFS Server configuration -> 
