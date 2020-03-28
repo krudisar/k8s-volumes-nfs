@@ -13,9 +13,21 @@ sample NFS Server /etc/exports file content:
 [root@localhost nfs-root-dynamic]# cat /etc/exports
 # write settings for NFS exports
 /var/spool/nfs-root *(rw,no_root_squash)
-/var/spool/nfs-root-dynamic *(rw,sync,hard,intr,no_root_squash)
+/var/spool/nfs-root-dynamic *(rw,sync,no_root_squash,no_all_squash)
+```
+... then reload the nfs server ...
+```
+systemctl restart nfs-server
 ```
 > !!! (no special access rights defined - DO NOT USE THIS IN PRODUCTION) !!!
+
+Firewall rules for NFS Server:
+```
+firewall-cmd --permanent --zone=public --add-service=nfs
+firewall-cmd --permanent --zone=public --add-service=mountd
+firewall-cmd --permanent --zone=public --add-service=rpc-bind
+firewall-cmd --reload
+```
 
 ```
 ...
@@ -41,6 +53,7 @@ kubectl apply -f deployment.yaml
 kubectl apply -f rbac.yaml
 kubectl apply -f class.yaml
 ```
+(every time you edit config, change export directory or change nfs server ip address ... delete old deployment and class and then apply new objects deployment.yaml, class.yaml)
 # Example #1
 
 First PVC and corresponding application pod writing to the PVC
@@ -48,7 +61,7 @@ First PVC and corresponding application pod writing to the PVC
 kubectl apply -f test-claim.yaml
 kubectl apply -f test-pod.yaml
 ```
-An NFS server's export directory you should see:
+In NFS server's export directory you should see:
 ```
 [root@localhost nfs-root-dynamic]# ls /var/spool/nfs-root-dynamic/ -l
 drwxrwxrwx. 2 root root 37 Mar 25 13:08 default-test-claim-pvc-b2ce634a-5825-4397-b04e-828d2362b444
@@ -60,7 +73,7 @@ Second PVC and corresponding application pod writing to the PVC
 kubectl apply -f test-another-claim.yaml
 kubectl apply -f test-another-pod.yaml
 ```
-AN NFS server's exports directory:
+In NFS server's exports directory:
 ```
 [root@localhost nfs-root-dynamic]# ls /var/spool/nfs-root-dynamic/ -l
 drwxrwxrwx. 2 root root 37 Mar 25 13:08 default-test-claim-pvc-b2ce634a-5825-4397-b04e-828d2362b444
@@ -83,7 +96,7 @@ kubectl patch storageclass managed-nfs-storage -p '{"metadata": {"annotations":{
 NAME                            PROVISIONER                      AGE
 managed-nfs-storage (default)   demo.local-nfs-provisioner/nfs   75m
 ```
-An NFS server's exports directory:
+In NFS server's exports directory:
 ```
 [root@localhost nfs-root-dynamic]# ls /var/spool/nfs-root-dynamic/ -l
 drwxrwxrwx. 2 root root 37 Mar 25 13:08 default-test-claim-pvc-b2ce634a-5825-4397-b04e-828d2362b444
